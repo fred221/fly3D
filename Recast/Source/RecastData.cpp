@@ -41,8 +41,8 @@ bool RecastData::find(size_t x, size_t y, size_t z)
 	for (size_t i = from; i < to; ++i)
 	{
 		static float diff = VOXEL_SIZE / 2.0f ;
-		float min = m_vspan[i].smin * m_cellHeight + m_org[1] - diff;
-		float max = m_vspan[i].smax * m_cellHeight + m_org[1] + diff;
+		float min = m_vspan[i].smin * m_cellHeight - diff; //+ m_org[1]
+		float max = m_vspan[i].smax * m_cellHeight + diff; //+ m_org[1]
 
 		min = min < 0.0f ? 0.0f : min;
 		max = max < 0.0f ? 0.0f : max;

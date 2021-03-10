@@ -28,6 +28,7 @@
 #include <new>
 #include <vector>
 #include <algorithm>
+#include <limits.h>
 /// @class dtQueryFilter
 ///
 /// <b>The Default Implementation</b>
