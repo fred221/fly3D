@@ -19,8 +19,9 @@ cd Build
 cmake ..  
 make  
 生成libOurRecast.so即可  
+
 生成数据：
-==
+===========
 sample 选择为 Only Mesh  
 点击屏幕内一点作为寻路开始坐标，后点击Build  
 Save为保存寻路二进制数据,路径为:RecastDemo/bin navmesh_***.bytes  
