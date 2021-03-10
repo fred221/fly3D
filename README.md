@@ -1,89 +1,33 @@
+改版的recast软件，主要支持两个功能：  
+1.去除封闭空间行走面  
+2.支持空中寻路功能  
 
-Recast & Detour
-===============
+工程生成：
+========
+1.cd RecastDemo 所在目录，后执行 premake5 vs2017  
+2.vs 工程对应为 Release Win64 或 Debug Win64  
 
-[![Travis (Linux) Build Status](https://travis-ci.org/recastnavigation/recastnavigation.svg?branch=master)](https://travis-ci.org/recastnavigation/recastnavigation)
-[![Appveyor (Windows) Build  Status](https://ci.appveyor.com/api/projects/status/20w84u25b3f8h179/branch/master?svg=true)](https://ci.appveyor.com/project/recastnavigation/recastnavigation/branch/master)
+RecastDemo 现在只是支持win下生成对应数据（如寻路，体素等二进制数据），Apple太贵了。。  
+OurRecast 为单独导出跨平台嵌入其他语言子工程，用于生成静态库 现支持Java(jni),C# 等。  
+OurRecast要嵌入Linux，Andriod下，可直接使用CMakeLists(需修改CMakeLists中Java所在jni路径)  
 
-[![Issue Stats](http://www.issuestats.com/github/recastnavigation/recastnavigation/badge/pr?style=flat)](http://www.issuestats.com/github/recastnavigation/recastnavigation)
-[![Issue Stats](http://www.issuestats.com/github/recastnavigation/recastnavigation/badge/issue?style=flat)](http://www.issuestats.com/github/recastnavigation/recastnavigation)
+![f033f0edf207e8621aa44a00f41355b](https://user-images.githubusercontent.com/35165340/110571933-67685b00-8193-11eb-9d2d-a75df596cade.png)  
 
-![screenshot of a navmesh baked with the sample program](/RecastDemo/screenshot.png?raw=true)
+后直接  
+mkdir Build  
+cd Build  
+cmake ..  
+make  
+生成libOurRecast.so即可  
 
-## Recast
+生成数据：
+===========
+sample 选择为 Only Mesh  
+点击屏幕内一点作为寻路开始坐标，后点击Build  
+Save为保存寻路二进制数据,路径为:RecastDemo/bin navmesh_***.bytes  
+Save3D为保存三维寻路体素所用文件:RecastDemo/bin navmesh_***3D.bytes  
 
-Recast is state of the art navigation mesh construction toolset for games.
-
-* It is automatic, which means that you can throw any level geometry at it and you will get robust mesh out
-* It is fast which means swift turnaround times for level designers
-* It is open source so it comes with full source and you can customize it to your heart's content. 
-
-The Recast process starts with constructing a voxel mold from a level geometry 
-and then casting a navigation mesh over it. The process consists of three steps, 
-building the voxel mold, partitioning the mold into simple regions, peeling off 
-the regions as simple polygons.
-
-1. The voxel mold is built from the input triangle mesh by rasterizing the triangles into a multi-layer heightfield. Some simple filters are  then applied to the mold to prune out locations where the character would not be able to move.
-2. The walkable areas described by the mold are divided into simple overlayed 2D regions. The resulting regions have only one non-overlapping contour, which simplifies the final step of the process tremendously.
-3. The navigation polygons are peeled off from the regions by first tracing the boundaries and then simplifying them. The resulting polygons are finally converted to convex polygons which makes them perfect for pathfinding and spatial reasoning about the level. 
-
-
-## Detour
-
-Recast is accompanied with Detour, path-finding and spatial reasoning toolkit. You can use any navigation mesh with Detour, but of course the data generated with Recast fits perfectly.
-
-Detour offers simple static navigation mesh which is suitable for many simple cases, as well as tiled navigation mesh which allows you to plug in and out pieces of the mesh. The tiled mesh allows you to create systems where you stream new navigation data in and out as the player progresses the level, or you may regenerate tiles as the world changes. 
-
-
-## Recast Demo
-
-You can find a comprehensive demo project in RecastDemo folder. It is a kitchen sink demo containing all the functionality of the library. If you are new to Recast & Detour, check out [Sample_SoloMesh.cpp](/RecastDemo/Source/Sample_SoloMesh.cpp) to get started with building navmeshes and [NavMeshTesterTool.cpp](/RecastDemo/Source/NavMeshTesterTool.cpp) to see how Detour can be used to find paths.
-
-### Building RecastDemo
-
-RecastDemo uses [premake5](http://premake.github.io/) to build platform specific projects. Download it and make sure it's available on your path, or specify the path to it.
-
-#### Linux
-
-- Install SDL2 and its dependencies according to your distro's guidelines.
-- run `premake5 gmake` from the `RecastDemo` folder.
-- `cd Build/gmake` then `make`
-- `cd RecastDemo/Bin` and then run `./RecastDemo`
-
-#### OSX
-
-- Grab the latest SDL2 development library dmg from [here](https://www.libsdl.org/download-2.0.php) and place `SDL2.framework` in `/Library/Frameworks/`
-- Navigate to the `RecastDemo` folder and run `premake5 xcode4`
-- Open `Build/xcode4/recastnavigation.xcworkspace`
-- Select the "RecastDemo" project in the left pane, go to the "BuildPhases" tab and expand "Link Binary With Libraries"
-- Remove the existing entry for SDL2 (it should have a white box icon) and re-add it by hitting the plus, selecting "Add Other", and selecting `/Library/Frameworks/SDL2.framework`.  It should now have a suitcase icon.
-- Set the RecastDemo project as the target and build.
-
-#### Windows
-
-- Grab the latest SDL2 development library release from [here](https://www.libsdl.org/download-2.0.php) and unzip it `RecastDemo\Contrib`.  Rename the SDL folder such that the path `RecastDemo\Contrib\SDL\lib\x86` is valid.
-- Run `"premake5" vs2019` from the `RecastDemo` folder
-- Open the solution, build, and run.
-
-### Running Unit tests
-
-- Follow the instructions to build RecastDemo above.  Premake should generate another build target called "Tests".
-- Build the "Tests" project.  This will generate an executable named "Tests" in `RecastDemo/Bin/`
-- Run the "Tests" executable.  It will execute all the unit tests, indicate those that failed, and display a count of those that succeeded.
-
-## Integrating with your own project
-
-It is recommended to add the source directories `DebugUtils`, `Detour`, `DetourCrowd`, `DetourTileCache`, and `Recast` into your own project depending on which parts of the project you need. For example your level building tool could include `DebugUtils`, `Recast`, and `Detour`, and your game runtime could just include `Detour`.
-
-## Contributing
-
-See the [Contributing document](CONTRIBUTING.md) for guidelines for making contributions.
-
-## Discuss
-
-- Discuss Recast & Detour: http://groups.google.com/group/recastnavigation
-- Development blog: http://digestingduck.blogspot.com/
-
-## License
-
-Recast & Detour is licensed under ZLib license, see License.txt for more information.
+三维寻路  
+========
+1.右侧 build -> Save3D -> load
+2.左侧 Tool -> Test Navmesh -> Pathfind Fly 
