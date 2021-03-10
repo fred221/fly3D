@@ -19,7 +19,7 @@ cd Build
 cmake ..  
 make  
 
-生成 libOurRecast.so 即可  
+生成libOurRecast.so即可  
 生成数据：
 ========
 sample 选择为 Only Mesh  
